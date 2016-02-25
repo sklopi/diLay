@@ -1,0 +1,11 @@
+[package]
+name = "delay_lama"
+version = "0.1.0"
+authors = ["stubiklaus <tobias-heinrichs@t-online.de>"]
+
+[dependencies.vst2]
+git = "https://github.com/overdrivenpotato/rust-vst2"
+
+[lib]
+name = "delay_lama"
+crate-type = ["dylib"]
