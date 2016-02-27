@@ -11,7 +11,7 @@ impl<T: Copy> DelayLine<T> {
 
     pub fn new(size: usize, default: T) -> DelayLine<T> {
         let mut v_line = Vec::with_capacity(size);
-        for x in 0..size {
+        for _ in 0..size {
             v_line.push(default);
         }
         DelayLine{
@@ -31,7 +31,7 @@ impl<T: Copy> DelayLine<T> {
 
     pub fn resize(&mut self, size: usize, default: T){
         let mut v_line = Vec::with_capacity(size);
-        let mut read_pos = 0;
+        let mut read_pos :usize;
 
         for i in 0..size {
             if i >= self.size {
@@ -42,7 +42,7 @@ impl<T: Copy> DelayLine<T> {
         }
 
         if size > self.size {
-            for x in self.size..size {
+            for _ in self.size..size {
                 v_line.push(default);
             }
         }
@@ -55,7 +55,7 @@ impl<T: Copy> DelayLine<T> {
 
 impl <T: Copy> Default for DelayLine<T> {
     fn default() -> DelayLine<T> {
-        let mut v_line = Vec::with_capacity(1);
+        let v_line = Vec::with_capacity(1);
 
         DelayLine{
             line: v_line.into_boxed_slice(),
