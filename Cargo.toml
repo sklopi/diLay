@@ -1,5 +1,5 @@
 [package]
-name = "delay_lama"
+name = "di_lay"
 version = "0.1.0"
 authors = ["stubiklaus <tobias-heinrichs@t-online.de>"]
 
@@ -7,5 +7,5 @@ authors = ["stubiklaus <tobias-heinrichs@t-online.de>"]
 git = "https://github.com/overdrivenpotato/rust-vst2"
 
 [lib]
-name = "delay_lama"
+name = "di_lay"
 crate-type = ["dylib"]
