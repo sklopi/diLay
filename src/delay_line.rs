@@ -29,6 +29,10 @@ impl<T: Copy> DelayLine<T> {
         self.line[read_pos]
     }
 
+    ///
+    /// resizes the buffer
+    /// is very ineffective, especially when automating delay time in daw
+    ///
     pub fn resize(&mut self, size: usize, default: T){
         let mut v_line = Vec::with_capacity(size);
         let mut read_pos :usize;

@@ -87,13 +87,22 @@ impl Plugin for DelayPlugin {
 }
 
 impl DelayPlugin {
+    ///
+    /// Generates a number representing the amount of miliseconds the sound should be delayed.
+    /// The value is expected to be a value from 0. to 1.
+    /// Generates vales between 100. and 600.
+    ///
     fn get_ms(value: f32) -> f32 {
         (value * 500. + 100.)
     }
 
+    ///
+    /// Generates a number representing the amount of samples the sound should be delayed.
+    ///
     fn get_samples(value: f32) -> usize {
         let ms = DelayPlugin::get_ms(value);
         let s = ms / 1000.;
+        //TODO The Samplerate is hardcoded at 44100 hz, this should be changed
         (44100. * s) as usize
     }
 }
