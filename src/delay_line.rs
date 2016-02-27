@@ -34,14 +34,14 @@ impl<T: Copy> DelayLine<T> {
         let mut read_pos = 0;
 
         for i in 0..size {
-            if(i >= self.size){
+            if i >= self.size {
                 break;
             }
             read_pos = (self.position + 1 + i) % self.size;
             v_line.push(self.line[read_pos]);
         }
 
-        if(size > self.size){
+        if size > self.size {
             for x in self.size..size {
                 v_line.push(default);
             }
