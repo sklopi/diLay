@@ -13,7 +13,7 @@ impl<T: Copy + Default> DelayLine<T> {
 
     pub fn new(size: usize, sample_delay: usize, default: T) -> DelayLine<T> {
         let mut v_line = Vec::with_capacity(size);
-        for _ in 0..size {
+        for x in 0..size {
             v_line.push(default);
         }
         DelayLine{
@@ -72,4 +72,8 @@ fn test_delay(){
     let mut delay_line : DelayLine<f32> = DelayLine::new(12, 12, 0.);
     //println!("{}",delay_line.add_and_read(1.) );
     assert_eq!(delay_line.add_and_read(1.), 0.);
+    for _ in 0..11 {
+        assert_eq!(delay_line.add_and_read(1.), 0.);
+    }
+    assert_eq!(delay_line.add_and_read(1.), 1.);
 }
