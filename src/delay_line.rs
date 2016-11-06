@@ -13,7 +13,7 @@ impl<T: Copy + Default> DelayLine<T> {
 
     pub fn new(size: usize, sample_delay: usize, default: T) -> DelayLine<T> {
         let mut v_line = Vec::with_capacity(size);
-        for x in 0..size {
+        for _ in 0..size {
             v_line.push(default);
         }
         DelayLine{
