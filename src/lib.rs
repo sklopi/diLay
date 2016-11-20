@@ -1,6 +1,13 @@
-#[macro_use]
-extern crate vst2;
+#[macro_use] extern crate vst2;
+#[macro_use] extern crate conrod;
+extern crate libc;
+extern crate winapi;
+extern crate user32;
+extern crate glutin;
+extern crate glium;
 
+
+mod editor;
 mod parameter;
 mod delay_line;
 use delay_line::DelayLine;
@@ -8,6 +15,8 @@ use parameter::Parameter;
 
 use vst2::plugin::{Info, Plugin};
 use vst2::buffer::{AudioBuffer};
+use vst2::editor::Editor;
+use editor::DelayEditor;
 
 use std::cell::Cell;
 
@@ -18,7 +27,8 @@ struct DelayPlugin{
     delay_x : DelayLine<f32>,
     sample_delay: usize,
     sample_rate: f32,
-    init: bool
+    init: bool,
+    editor: DelayEditor
 }
 
 impl Plugin for DelayPlugin {
@@ -97,6 +107,10 @@ impl Plugin for DelayPlugin {
             self.sample_delay = sample_delay;
         }
     }
+
+    fn get_editor(&mut self) -> Option<&mut Editor> {
+        Some(&mut self.editor)
+    }
 }
 
 impl DelayPlugin {
@@ -128,7 +142,8 @@ impl Default for DelayPlugin{
             delay_x : DelayLine::new(44100*2, 1, 0.),
             sample_delay: 1,
             sample_rate: 44100.,
-            init: false
+            init: false,
+            editor: DelayEditor::new()
         }
     }
 }
@@ -137,8 +152,6 @@ plugin_main!(DelayPlugin); // Important!
 
 #[test]
 fn test(){
-
-
     let mut plugin : DelayPlugin = Default::default();
     plugin.init();
     plugin.set_sample_rate(44100.);

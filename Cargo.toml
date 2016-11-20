@@ -5,7 +5,21 @@ authors = ["stubiklaus <tobias-heinrichs@t-online.de>"]
 
 [dependencies.vst2]
 git = "https://github.com/overdrivenpotato/rust-vst2"
+[dependencies.glutin]
+git = "https://github.com/Boscop/glutin"
+[dependencies.conrod]
+version = "*"
+features = ["glium", "glutin"]
+
+[dependencies]
+libc = "*"
+winapi = "*"
+user32-sys = "*"
+glium = "*"
 
 [lib]
 name = "di_lay"
 crate-type = ["dylib"]
+
+[replace]
+"glutin:0.6.2" = {git = "https://github.com/Boscop/glutin"}
