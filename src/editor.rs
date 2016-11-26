@@ -1,5 +1,6 @@
 use std;
 use std::path::Path;
+use std::collections::vec_deque::{VecDeque, Drain};
 
 use vst2::editor::{Editor, KeyCode, KnobMode};
 use libc::c_void;
@@ -20,14 +21,31 @@ const WIDTH: i32 = 800;
 const HEIGHT: i32 = 640;
 
 pub struct DelayEditor {
-    ctx: Option<RenderingContext>
+    ctx: Option<RenderingContext>,
+    current_delay: f32,
+    changed: bool,
 }
 
 impl DelayEditor {
     pub fn new() -> DelayEditor {
         DelayEditor {
-            ctx: None
+            ctx: None,
+            current_delay: 0.,
+            changed: false
         }
+    }
+
+    pub fn get_current_delay(&mut self) -> Option<f32> {
+        if self.changed {
+            self.changed = false;
+            Some(self.current_delay)
+        } else {
+            None
+        }
+    }
+
+    pub fn set_delay(&mut self, value: f32) {
+        self.current_delay = value;
     }
 }
 
@@ -83,7 +101,7 @@ impl Editor for DelayEditor {
         });
     }
     fn is_open(&mut self) -> bool {
-        self.open
+        self.ctx.is_some()
     }
 
     fn idle(&mut self) {
@@ -112,6 +130,17 @@ impl Editor for DelayEditor {
 
                 widget::Canvas::new().pad(30.).set(ctx.ids.canvas, &mut gui);
                 widget::Text::new("diLay").font_size(42).mid_top_of(ctx.ids.canvas).set(ctx.ids.text, &mut gui);
+                for (edge, value) in widget::RangeSlider::new(0., self.current_delay, 0., 1.)
+                    .mid_bottom_of(ctx.ids.canvas)
+                    .set(ctx.ids.dial, &mut gui) {
+                    match edge {
+                        widget::range_slider::Edge::End => {
+                            self.current_delay = value;
+                            self.changed = true;
+                        },
+                        _ => ()
+                    }
+                }
             }
 
 
@@ -140,6 +169,7 @@ impl Editor for DelayEditor {
 widget_ids! {
     pub struct Ids {
         canvas,
-        text
+        text,
+        dial
     }
 }

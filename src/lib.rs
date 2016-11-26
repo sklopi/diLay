@@ -10,6 +10,7 @@ extern crate glium;
 mod editor;
 mod parameter;
 mod delay_line;
+
 use delay_line::DelayLine;
 use parameter::Parameter;
 
@@ -21,10 +22,10 @@ use editor::DelayEditor;
 use std::cell::Cell;
 
 
-struct DelayPlugin{
-    parameters : Vec<Parameter>,
-    delay_y : DelayLine<f32>,
-    delay_x : DelayLine<f32>,
+struct DelayPlugin {
+    parameters: Vec<Parameter>,
+    delay_y: DelayLine<f32>,
+    delay_x: DelayLine<f32>,
     sample_delay: usize,
     sample_rate: f32,
     init: bool,
@@ -32,49 +33,54 @@ struct DelayPlugin{
 }
 
 impl Plugin for DelayPlugin {
-
     fn get_info(&self) -> Info {
         Info {
             name: "diLay".to_string(),
             unique_id: 13367, // Used by hosts to differentiate between plugins.
-            inputs:2,
-            outputs:2,
-            parameters:1,
+            inputs: 2,
+            outputs: 2,
+            parameters: 1,
             ..Default::default()
         }
     }
 
-    fn init(&mut self){
-        self.parameters= vec![Parameter{
+    fn init(&mut self) {
+        self.parameters = vec![Parameter {
             name: "Delay Time".to_string(),
             label: "ms".to_string(),
             value: Cell::new(0.),
             automatable: true,
         }];
         self.sample_delay = self.get_samples(self.parameters[0].value.get());
-        self.delay_y = DelayLine::new((self.sample_rate * 2.) as usize, self.sample_delay , 0.);
+        self.delay_y = DelayLine::new((self.sample_rate * 2.) as usize, self.sample_delay, 0.);
         self.delay_x = DelayLine::new((self.sample_rate * 2.) as usize, self.sample_delay, 0.);
         self.init = true;
     }
 
     fn process(&mut self, buffer: AudioBuffer<f32>) {
         let (mut inputs, mut outputs) = buffer.split();
-        let (input1,input2) =  inputs.split_at_mut(1);
+        let (input1, input2) = inputs.split_at_mut(1);
         let (input1, input2) = (&mut input1[0], &mut input2[0]);
 
-        let (output1,output2) = outputs.split_at_mut(1);
-        let (output1,output2) = (&mut output1[0],&mut output2[0]);
+        let (output1, output2) = outputs.split_at_mut(1);
+        let (output1, output2) = (&mut output1[0], &mut output2[0]);
 
-        let parameter: &Parameter =   self.parameters.get(0).unwrap();
+        let parameter: &Parameter = self.parameters.get(0).unwrap();
+
+        if let Some(new_delay) = self.editor.get_current_delay() {
+            parameter.value.set(new_delay);
+        }
+
         let value: f32 = parameter.value.get();
         let samples = self.get_samples(value);
         if self.sample_delay != samples {
             self.delay_x.set_sample_delay(samples);
             self.delay_y.set_sample_delay(samples);
+            self.editor.set_delay(value);
         }
         self.sample_delay = samples;
 
-        for (i,j) in input1.into_iter().enumerate(){
+        for (i, j) in input1.into_iter().enumerate() {
             let mut y = input2[i];
             let mut x = *j;
 
@@ -89,12 +95,12 @@ impl Plugin for DelayPlugin {
     }
 
     fn get_parameter_text(&self, index: i32) -> String {
-        let parameter : &Parameter =   self.parameters.get(index as usize).unwrap();
+        let parameter: &Parameter = self.parameters.get(index as usize).unwrap();
         parameter.value.get().to_string()
     }
 
     fn set_parameter(&mut self, index: i32, value: f32) {
-        let parameter :  &Parameter =  self.parameters.get(index as usize).unwrap();
+        let parameter: &Parameter = self.parameters.get(index as usize).unwrap();
         parameter.value.set(value);
     }
 
@@ -134,12 +140,12 @@ impl DelayPlugin {
     }
 }
 
-impl Default for DelayPlugin{
-    fn default() -> DelayPlugin{
-        DelayPlugin{
-            parameters : vec![],
-            delay_y : DelayLine::new(44100*2, 1, 0.),
-            delay_x : DelayLine::new(44100*2, 1, 0.),
+impl Default for DelayPlugin {
+    fn default() -> DelayPlugin {
+        DelayPlugin {
+            parameters: vec![],
+            delay_y: DelayLine::new(44100 * 2, 1, 0.),
+            delay_x: DelayLine::new(44100 * 2, 1, 0.),
             sample_delay: 1,
             sample_rate: 44100.,
             init: false,
@@ -151,22 +157,22 @@ impl Default for DelayPlugin{
 plugin_main!(DelayPlugin); // Important!
 
 #[test]
-fn test(){
-    let mut plugin : DelayPlugin = Default::default();
+fn test() {
+    let mut plugin: DelayPlugin = Default::default();
     plugin.init();
     plugin.set_sample_rate(44100.);
-    let mut i1 = [0. as f32;512];
-    let mut i2 = [0. as f32;512];
-    let mut o1 = [0. as f32;512];
-    let mut o2 = [0. as f32;512];
+    let mut i1 = [0. as f32; 512];
+    let mut i2 = [0. as f32; 512];
+    let mut o1 = [0. as f32; 512];
+    let mut o2 = [0. as f32; 512];
     let mut buffer: AudioBuffer<f32> = AudioBuffer::new(
         vec![
-            &mut i1,
-            &mut i2
+        &mut i1,
+        &mut i2
         ],
         vec![
-            &mut o1,
-            &mut o2
+        &mut o1,
+        &mut o2
         ]
     );
     plugin.process(buffer);
