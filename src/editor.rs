@@ -130,16 +130,11 @@ impl Editor for DelayEditor {
 
                 widget::Canvas::new().pad(30.).set(ctx.ids.canvas, &mut gui);
                 widget::Text::new("diLay").font_size(42).mid_top_of(ctx.ids.canvas).set(ctx.ids.text, &mut gui);
-                for (edge, value) in widget::RangeSlider::new(0., self.current_delay, 0., 1.)
+                for value in widget::Slider::new(self.current_delay, 0., 1.)
                     .mid_bottom_of(ctx.ids.canvas)
                     .set(ctx.ids.dial, &mut gui) {
-                    match edge {
-                        widget::range_slider::Edge::End => {
-                            self.current_delay = value;
-                            self.changed = true;
-                        },
-                        _ => ()
-                    }
+                    self.current_delay = value;
+                    self.changed = true;
                 }
             }
 
