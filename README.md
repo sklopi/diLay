@@ -4,7 +4,7 @@ I decided to implement a delay, because i don't need to know things like fourier
 At the moment i can use this plugin in ableton live (other DAWs not tested).
 
 the plugin is based on this library:
-https://github.com/overdrivenpotato/rust-vst2
+https://github.com/rust-dsp/rust-vst
 
 
 #### Goals

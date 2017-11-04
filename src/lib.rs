@@ -1,10 +1,8 @@
-#[macro_use] extern crate vst2;
-#[macro_use] extern crate conrod;
+#[macro_use]
+extern crate vst2;
 extern crate libc;
 extern crate winapi;
 extern crate user32;
-extern crate glutin;
-extern crate glium;
 
 
 mod editor;
@@ -15,7 +13,7 @@ use delay_line::DelayLine;
 use parameter::Parameter;
 
 use vst2::plugin::{Info, Plugin};
-use vst2::buffer::{AudioBuffer};
+use vst2::buffer::AudioBuffer;
 use vst2::editor::Editor;
 use editor::DelayEditor;
 
@@ -36,7 +34,8 @@ impl Plugin for DelayPlugin {
     fn get_info(&self) -> Info {
         Info {
             name: "diLay".to_string(),
-            unique_id: 13367, // Used by hosts to differentiate between plugins.
+            unique_id: 13367,
+            // Used by hosts to differentiate between plugins.
             inputs: 2,
             outputs: 2,
             parameters: 1,
@@ -167,12 +166,12 @@ fn test() {
     let mut o2 = [0. as f32; 512];
     let mut buffer: AudioBuffer<f32> = AudioBuffer::new(
         vec![
-        &mut i1,
-        &mut i2
+            &mut i1,
+            &mut i2
         ],
         vec![
-        &mut o1,
-        &mut o2
+            &mut o1,
+            &mut o2
         ]
     );
     plugin.process(buffer);
